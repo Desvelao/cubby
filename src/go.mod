@@ -1,11 +1,11 @@
 module github.com/Desvelao/cubby
 
-go 1.23.0
+go 1.26.0
 
 require (
 	github.com/go-pdf/fpdf v0.9.0
 	github.com/spf13/cobra v1.10.2
-	golang.org/x/image v0.30.0
+	golang.org/x/image v0.46.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
