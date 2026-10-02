@@ -1,0 +1,54 @@
+version: 2
+
+project_name: cubby
+
+before:
+  hooks:
+    - sh -c "cd src && go mod download"
+
+builds:
+  - id: cubby
+    dir: src
+    main: ./cmd/cubby
+    binary: cubby
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X github.com/Desvelao/cubby/internal/version.Version={{.Version}}
+      - -X github.com/Desvelao/cubby/internal/version.Commit={{.Commit}}
+      - -X github.com/Desvelao/cubby/internal/version.Date={{.Date}}
+
+archives:
+  - id: cubby
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - LICENSE
+      - README.md
+      - examples/*.yaml
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+release:
+  prerelease: auto
+  github:
+    owner: Desvelao
+    name: cubby

@@ -1,0 +1,132 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # Also used as the release gate (see release.yml).
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: src/go.mod
+          cache-dependency-path: src/go.sum
+
+      - name: Check version pins
+        run: sh scripts/check-versions_test.sh && sh scripts/check-versions.sh
+
+      - name: Build
+        working-directory: src
+        run: go build ./...
+
+      - name: Format
+        working-directory: src
+        run: test -z "$(gofmt -l .)"
+
+      - name: Vet
+        working-directory: src
+        run: go vet ./...
+
+      - name: Test
+        working-directory: src
+        run: go test ./... -race -cover
+
+      - name: Examples
+        run: make examples
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v7
+        with:
+          version: v2.1
+          working-directory: src
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Read Go version and build date
+        id: goversion
+        run: |
+          echo "version=$(sh scripts/check-versions.sh --print-go-version)" >> "$GITHUB_OUTPUT"
+          echo "date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
+      # Exercises the TARGETOS/TARGETARCH cross-compile and the arm64 image
+      # before a tag is pushed, with the same settings as the release gate.
+      # No QEMU: the build stage is pinned to $BUILDPLATFORM and the runtime
+      # stage has no RUN instruction.
+      - name: Build runtime image (multi-arch, no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: runtime
+          platforms: linux/amd64,linux/arm64
+          push: false
+          build-args: |
+            GO_VERSION=${{ steps.goversion.outputs.version }}
+            VERSION=ci
+            COMMIT=${{ github.sha }}
+            DATE=${{ steps.goversion.outputs.date }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Host-arch image loaded into the local daemon as cubby:ci (reuses
+      # the layers cached above).
+      - name: Build runtime image (host arch, load)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: runtime
+          platforms: linux/amd64
+          load: true
+          build-args: |
+            GO_VERSION=${{ steps.goversion.outputs.version }}
+            VERSION=ci
+            COMMIT=${{ github.sha }}
+            DATE=${{ steps.goversion.outputs.date }}
+          tags: cubby:ci
+          cache-from: type=gha
+
+      # Smoke-tests the loaded image: ldflags injection, validate against a
+      # read-only examples mount, and the README `--user` bind-mount flow.
+      - name: Smoke-test runtime image
+        env:
+          COMMIT: ${{ github.sha }}
+        run: |
+          set -eu
+          out="$(docker run --rm cubby:ci version)"
+          echo "$out"
+          case "$out" in *" ci "*) ;; *) echo "version output lacks injected version 'ci'" >&2; exit 1 ;; esac
+          case "$out" in *"$COMMIT"*) ;; *) echo "version output lacks commit $COMMIT" >&2; exit 1 ;; esac
+
+          docker run --rm -v "$PWD/examples":/work/examples:ro -w /work \
+            cubby:ci validate examples/chess-checkers.yaml
+
+          outdir="$(mktemp -d)"
+          trap 'rm -rf "$outdir"' EXIT
+          docker run --rm --user "$(id -u):$(id -g)" \
+            -v "$PWD/examples":/work/examples:ro -v "$outdir":/work/out -w /work \
+            cubby:ci build examples/chess-checkers.yaml --format csv,svg --out-dir /work/out
+          n=0
+          for f in "$outdir"/*.csv "$outdir"/*.svg; do
+            [ -s "$f" ] || { echo "missing or empty output: $f" >&2; exit 1; }
+            [ "$(stat -c %u "$f")" = "$(id -u)" ] || { echo "not owned by runner: $f" >&2; exit 1; }
+            n=$((n + 1))
+          done
+          echo "$n output files verified"

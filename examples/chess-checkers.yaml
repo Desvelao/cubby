@@ -1,0 +1,66 @@
+# yaml-language-server: $schema=../docs/manifest.schema.json
+version: 1
+
+project:
+  name: "Chess & Checkers Insert"
+  description: "Combined organizer for a chess set and a checkers set."
+  revision: "1.0"
+  author: "Cubby Examples"
+  license: "CC0-1.0"
+  url: "https://example.com/chess-checkers"
+  tags: [chess, checkers]
+  created: 2026-09-30
+  updated: 2026-09-30
+
+box:
+  name: "Chess & Checkers Combo"
+  units: mm
+  interior:
+    width: 300
+    depth: 300
+    height: 60
+
+material:
+  name: "3mm Foamboard"
+  thickness: 3.0
+  kerf: 0.0
+
+defaults:
+  padding: 1.0
+  margin: 1.5
+
+components:
+  - id: chess-pieces-box
+    name: "Chess Pieces Tray"
+    width: 140
+    depth: 90
+    height: 40
+    qty: 1
+  - id: checkers-red
+    name: "Red Checkers"
+    width: 30
+    depth: 30
+    height: 8
+    qty: 12
+  - id: checkers-black
+    name: "Black Checkers"
+    width: 30
+    depth: 30
+    height: 8
+    qty: 12
+  - id: rulebook
+    name: "Rulebook"
+    width: 140
+    depth: 90
+    height: 8
+    qty: 1
+
+groups:
+  - id: checkers-compartment
+    name: "Checkers Storage"
+    components: [checkers-red, checkers-black]
+    padding: 1.5
+    margin: 2.0
+  - id: chess-compartment
+    name: "Chess Pieces"
+    components: [chess-pieces-box]

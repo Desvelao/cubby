@@ -1,0 +1,48 @@
+version: 1
+
+# Demonstrates two layout options:
+# - defaults.fillRemaining: grow the spatially-last compartment to use up any
+#   leftover box space instead of leaving it empty.
+# - groups[].fullWalls: generate real divider panels on every side of a
+#   compartment, even where it touches the outer box wall.
+
+box:
+  name: "Full Walls Demo"
+  units: mm
+  interior:
+    width: 200
+    depth: 150
+    height: 40
+
+material:
+  name: "3mm Foamboard"
+  thickness: 3.0
+  kerf: 0.0
+
+defaults:
+  padding: 1.0
+  margin: 1.5
+  fillRemaining: true
+
+components:
+  - id: tokens
+    name: "Tokens"
+    width: 30
+    depth: 30
+    height: 15
+    qty: 4
+  - id: dice
+    name: "Dice"
+    width: 40
+    depth: 40
+    height: 15
+    qty: 1
+
+groups:
+  - id: token-tray
+    name: "Token Tray"
+    components: [tokens]
+    fullWalls: true
+  - id: dice-tray
+    name: "Dice Tray"
+    components: [dice]

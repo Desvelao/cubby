@@ -1,0 +1,53 @@
+version: 1
+
+# Demonstrates externalHeightReduction and dividerHeightReduction:
+# - defaults lower every internal divider by 30% so pieces are easy to grab.
+# - the "cards" tray overrides it: only its first row divider is lowered,
+#   by a fixed 6 mm, and its external walls are trimmed by 5 mm.
+
+box:
+  name: "Height Reduction Demo"
+  units: mm
+  interior:
+    width: 100
+    depth: 90
+    height: 40
+
+material:
+  name: "3mm Foamboard"
+  thickness: 3.0
+  kerf: 0.0
+
+defaults:
+  padding: 1.0
+  margin: 1.5
+  fullWalls: true
+  dividerHeightReduction: "30%"
+
+components:
+  - id: gear-a
+    name: "Gear A"
+    width: 30
+    depth: 20
+    height: 10
+    qty: 4
+    allowRotate: false
+  - id: cards
+    name: "Cards"
+    width: 35
+    depth: 15
+    height: 8
+    qty: 4
+    allowRotate: false
+
+groups:
+  - id: gears
+    name: "Gears"
+    components: [gear-a]
+  - id: card-tray
+    name: "Card tray"
+    components: [cards]
+    externalHeightReduction: 5
+    dividerHeightReduction:
+      by: 6
+      panels: ["ih-*-1"]

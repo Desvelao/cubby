@@ -1,0 +1,8 @@
+/src/bin/
+/dist/
+*.test
+*.out
+.DS_Store
+# stray build artifacts from manual runs at the repo root
+/out/
+/tasks.csv

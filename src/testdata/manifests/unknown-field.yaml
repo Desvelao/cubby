@@ -1,0 +1,23 @@
+version: 1
+
+box:
+  name: "Unknown Field Box"
+  units: mm
+  interior:
+    width: 100
+    depth: 60
+    height: 40
+  bogusField: 1
+
+material:
+  name: "3mm Foamboard"
+  thickness: 3.0
+  kerf: 0.0
+
+components:
+  - id: thing
+    name: "Thing"
+    width: 20
+    depth: 20
+    height: 5
+    qty: 1

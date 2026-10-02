@@ -1,0 +1,56 @@
+version: 1
+
+# Demonstrates the jointType manifest option:
+# - defaults.jointType: "plain" leaves panel-to-panel joints uncut (flat
+#   butt edges), for a build meant to be glued together instead of slotted.
+# - groups[].jointType overrides the default back to "notch" (the original
+#   interlocking half-lap slot behavior) for a single group.
+#
+# A joint is only cut as a notch if every compartment touching it resolves
+# to "notch" — here that means the divider shared between "glued-tray" and
+# "slotted-tray" is left plain too, since "glued-tray" opts out. "fullWalls"
+# on "slotted-tray" is what makes its own jointType override visible: those
+# boundary walls only touch "slotted-tray" itself, so they come out notched.
+
+box:
+  name: "Plain Joints Demo"
+  units: mm
+  interior:
+    width: 176
+    depth: 45
+    height: 40
+
+material:
+  name: "3mm Foamboard"
+  thickness: 3.0
+  kerf: 0.0
+
+defaults:
+  padding: 1.0
+  margin: 1.5
+  jointType: plain
+
+components:
+  - id: tokens
+    name: "Tokens"
+    width: 30
+    depth: 30
+    height: 15
+    qty: 4
+  - id: dice
+    name: "Dice"
+    width: 40
+    depth: 40
+    height: 15
+    qty: 1
+
+groups:
+  - id: glued-tray
+    name: "Glued Tray"
+    components: [tokens]
+    jointType: plain
+  - id: slotted-tray
+    name: "Slotted Tray"
+    components: [dice]
+    jointType: plain
+    fullWalls: true

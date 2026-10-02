@@ -1,0 +1,35 @@
+# dev/test run as the host user so files written to the bind mount (src/bin,
+# go.sum, test output) are not root-owned and git does not report "dubious
+# ownership". Compose reads LOCAL_UID/LOCAL_GID from the environment (default
+# 1000:1000); `make docker-dev` / `make docker-test` pass the real ids. When
+# calling compose directly: LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) docker compose run --rm dev
+# (bash's UID is not exported and GID is unset, hence the LOCAL_ names).
+# HOME and the Go/golangci-lint caches live in the world-writable /cache volume
+# (see the Dockerfile dev stage) because /go and /root are root-owned.
+x-dev: &dev
+  build:
+    context: .
+    target: dev
+  user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+  working_dir: /workspace/src
+  environment:
+    HOME: /cache/home
+    GOCACHE: /cache/go-build
+    GOMODCACHE: /cache/go-mod
+    GOLANGCI_LINT_CACHE: /cache/golangci-lint
+  volumes:
+    - .:/workspace
+    - dev-cache:/cache
+
+services:
+  dev:
+    <<: *dev
+    stdin_open: true
+    tty: true
+
+  test:
+    <<: *dev
+    command: ["go", "test", "./...", "-race", "-cover"]
+
+volumes:
+  dev-cache:

@@ -1,0 +1,41 @@
+version: 1
+
+# Simple box with two components in two groups (compartments).
+box:
+  name: "Two Compartment Box"
+  units: mm
+  interior:
+    width: 100
+    depth: 60
+    height: 40
+
+material:
+  name: "3mm Foamboard"
+  thickness: 3.0
+  kerf: 0.0
+
+defaults:
+  padding: 1.0
+  margin: 1.5
+
+components:
+  - id: card-tray
+    name: "Card Tray"
+    width: 40
+    depth: 50
+    height: 20
+    qty: 1
+  - id: token-tray
+    name: "Token Tray"
+    width: 30
+    depth: 50
+    height: 20
+    qty: 1
+
+groups:
+  - id: cards
+    name: "Cards"
+    components: [card-tray]
+  - id: tokens
+    name: "Tokens"
+    components: [token-tray]
