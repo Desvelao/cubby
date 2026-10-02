@@ -288,13 +288,13 @@ func TestBuildFixtureContent(t *testing.T) {
 
 var svgWidthRe = regexp.MustCompile(`<svg[^>]* width="([0-9.]+)mm" height="([0-9.]+)mm"`)
 
-func svgSize(t *testing.T, svg string) (w, h string) {
+func svgSize(t *testing.T, svg string) string {
 	t.Helper()
 	m := svgWidthRe.FindStringSubmatch(svg)
 	if m == nil {
 		t.Fatalf("no width/height on <svg> in:\n%s", svg)
 	}
-	return m[1], m[2]
+	return m[1]
 }
 
 func TestBuildSheetWidthAffectsSVGCanvas(t *testing.T) {
@@ -304,7 +304,7 @@ func TestBuildSheetWidthAffectsSVGCanvas(t *testing.T) {
 	if code != 0 {
 		t.Fatalf("expected exit 0, got %d", code)
 	}
-	if w, _ := svgSize(t, def); w != "600" {
+	if w := svgSize(t, def); w != "600" {
 		t.Errorf("default canvas width = %s, want 600", w)
 	}
 
@@ -312,7 +312,7 @@ func TestBuildSheetWidthAffectsSVGCanvas(t *testing.T) {
 	if code != 0 {
 		t.Fatalf("expected exit 0, got %d", code)
 	}
-	if w, _ := svgSize(t, narrow); w != "300" {
+	if w := svgSize(t, narrow); w != "300" {
 		t.Errorf("--sheet-width 300: canvas width = %s, want 300", w)
 	}
 	if !strings.Contains(narrow, `viewBox="0 0 300 `) {

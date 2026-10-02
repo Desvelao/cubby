@@ -100,7 +100,7 @@ func underlyingStruct(t reflect.Type) reflect.Type {
 	}
 	// Types with a custom YAML parser (scalar-or-mapping values) are
 	// documented in their field's row, not as a table of their own.
-	if reflect.PtrTo(t).Implements(reflect.TypeOf((*yaml.Unmarshaler)(nil)).Elem()) {
+	if reflect.PointerTo(t).Implements(reflect.TypeOf((*yaml.Unmarshaler)(nil)).Elem()) {
 		return nil
 	}
 	if t.Kind() == reflect.Struct {

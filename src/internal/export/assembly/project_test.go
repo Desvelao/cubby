@@ -134,14 +134,14 @@ func TestExportProjectTextAndInfoViaPoppler(t *testing.T) {
 func TestDrawProjectBlockHeight(t *testing.T) {
 	pdf := newPDFDoc(fpdf.New("P", "mm", "A4", ""))
 	pdf.AddPage()
-	if h := drawProjectBlock(pdf, nil, 15, 15, 180); h != 0 {
+	if h := drawProjectBlock(pdf, nil, 180); h != 0 {
 		t.Errorf("nil project height = %v", h)
 	}
-	if h := drawProjectBlock(pdf, &manifest.Project{Tags: []string{"x"}, Game: "g"}, 15, 15, 180); h != 0 {
+	if h := drawProjectBlock(pdf, &manifest.Project{Tags: []string{"x"}, Game: "g"}, 180); h != 0 {
 		t.Errorf("unrelated-only project height = %v", h)
 	}
 	p := projectFixture()
-	h := drawProjectBlock(pdf, &p, 15, 15, 180)
+	h := drawProjectBlock(pdf, &p, 180)
 	// name + meta + at most projectDescMaxLines description lines + gap.
 	if h <= 0 || h > 6+1+5+4*projectDescMaxLines+projectGapMM+0.001 {
 		t.Errorf("height = %v", h)

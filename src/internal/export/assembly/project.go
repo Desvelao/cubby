@@ -41,10 +41,10 @@ const (
 )
 
 // drawProjectBlock prints the project name, a revision/author/license line and
-// the description (wrapped, truncated to projectDescMaxLines lines) at (x, y)
+// the description (wrapped, truncated to projectDescMaxLines lines) at (pageMargin, pageMargin)
 // within width w, and returns the height it used including a trailing gap; it
 // draws nothing and returns 0 when none of those fields is set.
-func drawProjectBlock(pdf *pdfDoc, p *manifest.Project, x, y, w float64) float64 {
+func drawProjectBlock(pdf *pdfDoc, p *manifest.Project, w float64) float64 {
 	if p == nil {
 		return 0
 	}
@@ -64,17 +64,17 @@ func drawProjectBlock(pdf *pdfDoc, p *manifest.Project, x, y, w float64) float64
 	}
 
 	pdf.SetTextColor(20, 20, 20)
-	cur := y
+	cur := pageMargin
 	if name != "" {
 		pdf.SetFont("Courier", "B", 14)
 		cur += 6
-		pdf.Text(x, cur, truncateToWidth(pdf, name, w))
+		pdf.Text(pageMargin, cur, truncateToWidth(pdf, name, w))
 		cur += 1
 	}
 	if len(meta) > 0 {
 		pdf.SetFont("Courier", "", 9)
 		cur += 5
-		pdf.Text(x, cur, truncateToWidth(pdf, strings.Join(meta, "  |  "), w))
+		pdf.Text(pageMargin, cur, truncateToWidth(pdf, strings.Join(meta, "  |  "), w))
 	}
 	if desc != "" {
 		pdf.SetFont("Courier", "", 8)
@@ -85,10 +85,10 @@ func drawProjectBlock(pdf *pdfDoc, p *manifest.Project, x, y, w float64) float64
 		}
 		for _, l := range lines {
 			cur += 4
-			pdf.Text(x, cur, l)
+			pdf.Text(pageMargin, cur, l)
 		}
 	}
-	return cur - y + projectGapMM
+	return cur - pageMargin + projectGapMM
 }
 
 // wrapText greedily breaks s at spaces into lines no wider than w in the

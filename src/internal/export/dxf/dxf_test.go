@@ -162,7 +162,7 @@ func TestExportHeaderDeclaresMillimetres(t *testing.T) {
 		t.Fatal(err)
 	}
 	out := buf.String()
-	header := out[:strings.Index(out, "ENDSEC")]
+	header, _, _ := strings.Cut(out, "ENDSEC")
 	for _, want := range []string{"9\n$INSUNITS\n70\n4\n", "9\n$MEASUREMENT\n70\n1\n"} {
 		if !strings.Contains(header, want) {
 			t.Errorf("HEADER missing %q:\n%s", want, header)

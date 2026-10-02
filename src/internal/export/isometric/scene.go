@@ -132,9 +132,10 @@ func BuildSceneCase(box pack.BoxResult, panels []geometry.Panel, mat manifest.Ma
 		placedPanels = append(placedPanels, ep)
 
 		base := widthRunColor
-		if p.Axis == geometry.AxisDepthRun {
+		switch p.Axis {
+		case geometry.AxisDepthRun:
 			base = depthRunColor
-		} else if p.Axis == geometry.AxisFloor {
+		case geometry.AxisFloor:
 			base = floorColor
 		}
 

@@ -894,8 +894,8 @@ func fullWallsBox(w, d float64, cells ...[]pack.CompartmentResult) pack.BoxResul
 	return box
 }
 
-func fwCell(id string, x, y, w, d float64, full bool) pack.CompartmentResult {
-	return pack.CompartmentResult{ID: id, Kind: "group", Bounds: pack.Rect{X: x, Y: y, W: w, D: d}, FullWalls: full}
+func fwCell(id string, x, y, w float64, full bool) pack.CompartmentResult {
+	return pack.CompartmentResult{ID: id, Kind: "group", Bounds: pack.Rect{X: x, Y: y, W: w, D: 50}, FullWalls: full}
 }
 
 // FullWalls boundary walls must only be notched where a crossing panel really
@@ -903,26 +903,26 @@ func fwCell(id string, x, y, w, d float64, full bool) pack.CompartmentResult {
 func TestRenderFullWallsNotchesInterlock(t *testing.T) {
 	cases := map[string]pack.BoxResult{
 		"single-row-all-full": fullWallsBox(150, 50, []pack.CompartmentResult{
-			fwCell("a", 0, 0, 50, 50, true), fwCell("b", 50, 0, 50, 50, true), fwCell("c", 100, 0, 50, 50, true),
+			fwCell("a", 0, 0, 50, true), fwCell("b", 50, 0, 50, true), fwCell("c", 100, 0, 50, true),
 		}),
 		"single-row-mixed": fullWallsBox(150, 50, []pack.CompartmentResult{
-			fwCell("a", 0, 0, 50, 50, true), fwCell("b", 50, 0, 50, 50, false), fwCell("c", 100, 0, 50, 50, true),
+			fwCell("a", 0, 0, 50, true), fwCell("b", 50, 0, 50, false), fwCell("c", 100, 0, 50, true),
 		}),
 		"single-row-first-only": fullWallsBox(100, 50, []pack.CompartmentResult{
-			fwCell("a", 0, 0, 50, 50, true), fwCell("b", 50, 0, 50, 50, false),
+			fwCell("a", 0, 0, 50, true), fwCell("b", 50, 0, 50, false),
 		}),
 		"single-row-last-only": fullWallsBox(100, 50, []pack.CompartmentResult{
-			fwCell("a", 0, 0, 50, 50, false), fwCell("b", 50, 0, 50, 50, true),
+			fwCell("a", 0, 0, 50, false), fwCell("b", 50, 0, 50, true),
 		}),
 		"grid-all-full": fullWallsBox(100, 150,
-			[]pack.CompartmentResult{fwCell("a1", 0, 0, 50, 50, true), fwCell("a2", 50, 0, 50, 50, true)},
-			[]pack.CompartmentResult{fwCell("b1", 0, 50, 50, 50, true), fwCell("b2", 50, 50, 50, 50, true)},
-			[]pack.CompartmentResult{fwCell("c1", 0, 100, 50, 50, true), fwCell("c2", 50, 100, 50, 50, true)},
+			[]pack.CompartmentResult{fwCell("a1", 0, 0, 50, true), fwCell("a2", 50, 0, 50, true)},
+			[]pack.CompartmentResult{fwCell("b1", 0, 50, 50, true), fwCell("b2", 50, 50, 50, true)},
+			[]pack.CompartmentResult{fwCell("c1", 0, 100, 50, true), fwCell("c2", 50, 100, 50, true)},
 		),
 		"grid-staggered-mixed": fullWallsBox(100, 150,
-			[]pack.CompartmentResult{fwCell("a1", 0, 0, 40, 50, true), fwCell("a2", 40, 0, 60, 50, false)},
-			[]pack.CompartmentResult{fwCell("b1", 0, 50, 100, 50, true)},
-			[]pack.CompartmentResult{fwCell("c1", 0, 100, 70, 50, false), fwCell("c2", 70, 100, 30, 50, true)},
+			[]pack.CompartmentResult{fwCell("a1", 0, 0, 40, true), fwCell("a2", 40, 0, 60, false)},
+			[]pack.CompartmentResult{fwCell("b1", 0, 50, 100, true)},
+			[]pack.CompartmentResult{fwCell("c1", 0, 100, 70, false), fwCell("c2", 70, 100, 30, true)},
 		),
 	}
 	for name, box := range cases {

@@ -258,9 +258,10 @@ func dxfHeights(t *testing.T, dxf string) map[string]float64 {
 		switch {
 		case code == "0":
 			inText = val == "TEXT"
-			if val == "POLYLINE" {
+			switch val {
+			case "POLYLINE":
 				inPoly, ys = true, nil
-			} else if val == "SEQEND" {
+			case "SEQEND":
 				inPoly = false
 			}
 		case code == "20" && inPoly && dxfNumRe.MatchString(val):

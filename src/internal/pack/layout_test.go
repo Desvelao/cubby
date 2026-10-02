@@ -941,7 +941,7 @@ func TestExpandShrinksRemainingByShare(t *testing.T) {
 	}
 }
 
-func allRejectedManifest(removable bool, margin float64) *manifest.Manifest {
+func allRejectedManifest(removable bool) *manifest.Manifest {
 	m := &manifest.Manifest{
 		Version: 1,
 		Box: manifest.Box{
@@ -959,7 +959,6 @@ func allRejectedManifest(removable bool, margin float64) *manifest.Manifest {
 			{ID: "live", Name: "Live", Components: []string{"ok"}},
 		},
 	}
-	m.Defaults.Margin = margin
 	return m
 }
 
@@ -996,15 +995,15 @@ func checkAllRejected(t *testing.T, m *manifest.Manifest) {
 }
 
 func TestLayoutBoxAllRejectedGroupNonRemovableZeroMargin(t *testing.T) {
-	checkAllRejected(t, allRejectedManifest(false, 0))
+	checkAllRejected(t, allRejectedManifest(false))
 }
 
 func TestLayoutBoxAllRejectedGroupRemovable(t *testing.T) {
-	checkAllRejected(t, allRejectedManifest(true, 0))
+	checkAllRejected(t, allRejectedManifest(true))
 }
 
 func TestLayoutBoxMixedGroupKeepsCompartment(t *testing.T) {
-	m := allRejectedManifest(false, 0)
+	m := allRejectedManifest(false)
 	m.Groups = []manifest.Group{{ID: "mixed", Name: "Mixed", Components: []string{"tall", "ok"}}}
 	res, err := LayoutBox(m)
 	if err != nil {
@@ -1028,7 +1027,7 @@ func TestLayoutBoxMixedGroupKeepsCompartment(t *testing.T) {
 }
 
 func TestLayoutBoxEveryGroupEmpty(t *testing.T) {
-	m := allRejectedManifest(false, 0)
+	m := allRejectedManifest(false)
 	m.Groups = m.Groups[:1]
 	m.Components = m.Components[:2]
 	res, err := LayoutBox(m)

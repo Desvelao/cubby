@@ -90,7 +90,7 @@ func TestRenderSharedPanelLargestReductionWins(t *testing.T) {
 // not touch dividers.
 func TestRenderReductionClassesAreIndependent(t *testing.T) {
 	box := fullWallsBox(100, 50, []pack.CompartmentResult{
-		fwCell("a", 0, 0, 50, 50, true), fwCell("b", 50, 0, 50, 50, true),
+		fwCell("a", 0, 0, 50, true), fwCell("b", 50, 0, 50, true),
 	})
 	box.Compartments[0].ExternalReduction = pack.HeightReduction{AmountMM: 10}
 	box.Compartments[1].DividerReduction = pack.HeightReduction{AmountMM: 4}
@@ -130,7 +130,7 @@ func TestRenderFullWallsBoundaryExternalReduction(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			cell := fwCell("a", 0, 0, 100, 50, true)
+			cell := fwCell("a", 0, 0, 100, true)
 			cell.ExternalReduction = tc.red
 			box := fullWallsBox(100, 50, []pack.CompartmentResult{cell})
 			panels, err := Backend{}.Render(box, mat, render.RenderOptions{})
@@ -157,11 +157,11 @@ func TestRenderFullWallsBoundaryExternalReduction(t *testing.T) {
 
 // Each FullWalls cell reduces only its own boundary walls.
 func TestRenderFullWallsBoundaryPerCellReduction(t *testing.T) {
-	a := fwCell("a", 0, 0, 50, 50, true)
+	a := fwCell("a", 0, 0, 50, true)
 	a.ExternalReduction = pack.HeightReduction{AmountMM: 5}
-	b := fwCell("b", 50, 0, 50, 50, true)
+	b := fwCell("b", 50, 0, 50, true)
 	b.ExternalReduction = pack.HeightReduction{AmountMM: 12}
-	c := fwCell("c", 100, 0, 50, 50, false) // not FullWalls: reduction has no walls to act on
+	c := fwCell("c", 100, 0, 50, false) // not FullWalls: reduction has no walls to act on
 	c.ExternalReduction = pack.HeightReduction{AmountMM: 20}
 	panels, err := Backend{}.Render(fullWallsBox(150, 50, []pack.CompartmentResult{a, b, c}), manifest.Material{Thickness: 3}, render.RenderOptions{})
 	if err != nil {
@@ -208,7 +208,7 @@ func TestRenderFullWallsBoundaryReductionErrors(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			cell := fwCell("a", 0, 0, 100, 50, true)
+			cell := fwCell("a", 0, 0, 100, true)
 			cell.ExternalReduction = tc.red
 			cell.JointType = tc.joint
 			_, err := Backend{}.Render(fullWallsBox(100, 50, []pack.CompartmentResult{cell}), mat, render.RenderOptions{})
@@ -347,7 +347,7 @@ func TestRenderReductionWithTrayFloor(t *testing.T) {
 		}
 	})
 	t.Run("grid full walls external", func(t *testing.T) {
-		cell := fwCell("a", 0, 0, 100, 50, true)
+		cell := fwCell("a", 0, 0, 100, true)
 		cell.Floor = true
 		cell.ExternalReduction = pack.HeightReduction{Percent: 10}
 		panels, err := Backend{}.Render(fullWallsBox(100, 50, []pack.CompartmentResult{cell}), mat, render.RenderOptions{})

@@ -11,7 +11,7 @@ func TestUnusedExternalReductions(t *testing.T) {
 	ext := pack.HeightReduction{AmountMM: 5}
 	other := pack.HeightReduction{Percent: 10}
 	tray := func(id string, full, removable bool, r pack.HeightReduction) pack.CompartmentResult {
-		cr := fwCell(id, 0, 0, 50, 50, full)
+		cr := fwCell(id, 0, 0, 50, full)
 		cr.Removable = removable
 		cr.ExternalReduction = r
 		return cr

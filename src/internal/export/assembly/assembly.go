@@ -65,7 +65,7 @@ func (e Exporter) Export(w io.Writer, box pack.BoxResult, panels []geometry.Pane
 			// The project title block, when there is one, sits above the
 			// assembled preview and pushes it down; without a project
 			// nothing moves.
-			top += drawProjectBlock(pdf, box.Project, pageMargin, pageMargin, contentW)
+			top += drawProjectBlock(pdf, box.Project, contentW)
 		}
 		return fitScene(pdf, scene, pageMargin, top, contentW, pageH-pageMargin-top)
 	}

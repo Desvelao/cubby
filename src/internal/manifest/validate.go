@@ -83,11 +83,12 @@ func Validate(m *Manifest) ValidationResult {
 	} else if m.Material.Thickness <= 0 {
 		add("material.thickness", "must be > 0, got %v", m.Material.Thickness)
 	}
-	if !finite(m.Material.Kerf) {
+	switch {
+	case !finite(m.Material.Kerf):
 		add("material.kerf", "must be a finite number, got %v", m.Material.Kerf)
-	} else if m.Material.Kerf < 0 {
+	case m.Material.Kerf < 0:
 		add("material.kerf", "must be >= 0, got %v", m.Material.Kerf)
-	} else if finite(m.Material.Thickness) && m.Material.Thickness > 0 && m.Material.Kerf >= m.Material.Thickness {
+	case finite(m.Material.Thickness) && m.Material.Thickness > 0 && m.Material.Kerf >= m.Material.Thickness:
 		// The slot width is thickness+kerf (geometry.SlotWidth), so a kerf of
 		// at least the thickness at least doubles it: almost certainly a
 		// units slip (e.g. 3 instead of 0.3).
