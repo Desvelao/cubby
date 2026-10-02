@@ -47,7 +47,7 @@ jobs:
           echo "date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
 
       # `latest` only moves for stable tags (vX.Y.Z); prereleases such as
-      # v1.0.0-rc1 and build-metadata tags only get their own tag.
+      # v0.1.0-alpha1 and build-metadata tags only get their own tag.
       - name: Compute image tags
         id: tags
         env:

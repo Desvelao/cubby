@@ -25,15 +25,15 @@ use GoReleaser's default naming, `cubby_<version>_<os>_<arch>`, where
 `<version>` has no leading `v`: `.tar.gz` for Linux and macOS, `.zip` for
 Windows. For example:
 
-- `cubby_1.0.0_linux_amd64.tar.gz`
-- `cubby_1.0.0_darwin_arm64.tar.gz`
-- `cubby_1.0.0_windows_amd64.zip`
+- `cubby_0.1.0-alpha1_linux_amd64.tar.gz`
+- `cubby_0.1.0-alpha1_darwin_arm64.tar.gz`
+- `cubby_0.1.0-alpha1_windows_amd64.zip`
 
 Each archive contains the `cubby` binary (`cubby.exe` on Windows), `LICENSE`,
 `README.md` and the example manifests (`examples/*.yaml`). On Linux or macOS:
 
 ```sh
-tar -xzf cubby_1.0.0_linux_amd64.tar.gz cubby
+tar -xzf cubby_0.1.0-alpha1_linux_amd64.tar.gz cubby
 sudo mv cubby /usr/local/bin/
 cubby version
 ```
@@ -46,7 +46,7 @@ downloads.
 
 A multi-arch (linux/amd64, linux/arm64) image is published to GHCR for each
 release. Use a specific release tag, or `latest`, which only tracks stable
-`vX.Y.Z` releases (prereleases such as `v1.0.0-rc1` get only their own tag):
+`vX.Y.Z` releases (prereleases such as `v0.1.0-alpha1` get only their own tag):
 
 ```sh
 docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/work -w /work \

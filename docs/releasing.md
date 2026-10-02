@@ -9,7 +9,7 @@ Releases are cut by pushing a tag; the `Release` workflow does the rest.
    git tag vX.Y.Z
    git push origin vX.Y.Z
    ```
-   Use `vX.Y.Z-rc1` for a prerelease (GoReleaser marks it as a prerelease and the
+   Use `vX.Y.Z-alpha1` for a prerelease (GoReleaser marks it as a prerelease and the
    Docker `latest` tag does not move).
 
 The workflow validates the tag, re-runs CI as a gate, publishes GoReleaser
