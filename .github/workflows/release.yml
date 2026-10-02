@@ -67,7 +67,7 @@ jobs:
       # cached for the push below. No QEMU: the build stage is pinned to
       # $BUILDPLATFORM and the runtime stage has no RUN instruction.
       - name: Build image (no push)
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           target: runtime
@@ -99,7 +99,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push GHCR image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           target: runtime
